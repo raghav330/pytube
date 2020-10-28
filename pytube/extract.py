@@ -277,15 +277,17 @@ def apply_descrambler(stream_data: Dict, key: str) -> None:
 
     if key == "url_encoded_fmt_stream_map" and not stream_data.get(
         "url_encoded_fmt_stream_map"
-    ):
-        formats = json.loads(stream_data["player_response"])["streamingData"][
-            "formats"
-        ]
-        formats.extend(
-            json.loads(stream_data["player_response"])["streamingData"][
-                "adaptiveFormats"
+    ):  
+        try:
+            formats = json.loads(stream_data["player_response"])["streamingData"][
+                "formats"
             ]
-        )
+        except KeyError:
+            formats.extend(
+                json.loads(stream_data["player_response"])["streamingData"][
+                    "adaptiveFormats"
+                ]
+            )
         try:
             stream_data[key] = [
                 {
